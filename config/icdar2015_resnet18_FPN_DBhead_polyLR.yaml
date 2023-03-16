@@ -40,7 +40,7 @@ lr_scheduler:
     warmup_epoch: 3
 trainer:
   seed: 2
-  epochs: 1200
+  epochs: 100
   log_iter: 10
   show_images_iter: 50
   resume_checkpoint: ''
@@ -55,9 +55,9 @@ dataset:
           - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/train.txt
         img_mode: RGB
     loader:
-      batch_size: 1
+      batch_size: 32
       shuffle: false
-      pin_memory: true
+      pin_memory: false
       num_workers: 6
       collate_fn: ''
   validate:
