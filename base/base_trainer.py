@@ -8,7 +8,7 @@ import shutil
 from pprint import pformat
 
 import anyconfig
-import torch
+import oneflow as torch
 
 from utils import setup_logger
 

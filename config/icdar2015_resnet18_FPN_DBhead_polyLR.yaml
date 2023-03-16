@@ -40,23 +40,23 @@ lr_scheduler:
     warmup_epoch: 3
 trainer:
   seed: 2
-  epochs: 1200
+  epochs: 100
   log_iter: 10
   show_images_iter: 50
   resume_checkpoint: ''
   finetune_checkpoint: ''
   output_dir: output
-  tensorboard: true
+  tensorboard: false
 dataset:
   train:
     dataset:
       args:
         data_path:
-          - ./datasets/train.txt
+          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/train_xn.txt
         img_mode: RGB
     loader:
-      batch_size: 1
-      shuffle: true
+      batch_size: 32
+      shuffle: false
       pin_memory: true
       num_workers: 6
       collate_fn: ''
@@ -64,7 +64,7 @@ dataset:
     dataset:
       args:
         data_path:
-          - ./datasets/test.txt
+          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/test_xn.txt
         pre_processes:
           - type: ResizeShortSize
             args:
@@ -72,8 +72,8 @@ dataset:
               resize_text_polys: false
         img_mode: RGB
     loader:
-      batch_size: 1
-      shuffle: true
+      batch_size: 16
+      shuffle: false
       pin_memory: false
       num_workers: 6
       collate_fn: ICDARCollectFN
