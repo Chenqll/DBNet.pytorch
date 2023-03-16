@@ -52,11 +52,11 @@ dataset:
     dataset:
       args:
         data_path:
-          - ./datasets/train.txt
+          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/train.txt
         img_mode: RGB
     loader:
       batch_size: 1
-      shuffle: true
+      shuffle: false
       pin_memory: true
       num_workers: 6
       collate_fn: ''
@@ -64,7 +64,7 @@ dataset:
     dataset:
       args:
         data_path:
-          - ./datasets/test.txt
+          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/test.txt
         pre_processes:
           - type: ResizeShortSize
             args:
@@ -73,7 +73,7 @@ dataset:
         img_mode: RGB
     loader:
       batch_size: 1
-      shuffle: true
+      shuffle: false
       pin_memory: false
       num_workers: 6
       collate_fn: ICDARCollectFN
