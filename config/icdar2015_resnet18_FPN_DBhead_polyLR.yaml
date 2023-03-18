@@ -52,7 +52,7 @@ dataset:
     dataset:
       args:
         data_path:
-          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/train_xn.txt
+          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/train.txt
         img_mode: RGB
     loader:
       batch_size: 32
@@ -64,7 +64,7 @@ dataset:
     dataset:
       args:
         data_path:
-          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/test_xn.txt
+          - /data/home/chenqiaoling/OCR/DBNet.pytorch/datasets/icdar2015/test.txt
         pre_processes:
           - type: ResizeShortSize
             args:
