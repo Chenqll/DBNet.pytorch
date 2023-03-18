@@ -48,8 +48,9 @@ class Trainer(BaseTrainer):
             if i >= self.train_loader_len:
                 break
             self.global_step += 1
+           
             lr = self.optimizer.param_groups[0]['lr']
-
+            self.optimizer.param_groups[0]['lr']=self.optimizer.param_groups[0]['lr'][0]
             # 数据进行转换和丢到gpu
             for key, value in batch.items():
                 if value is not None:
@@ -83,13 +84,17 @@ class Trainer(BaseTrainer):
             acc = score_shrink_map['Mean Acc']
             iou_shrink_map = score_shrink_map['Mean IoU']
 
-            if self.global_step % self.log_iter == 0:
-                batch_time = time.time() - batch_start
-                self.logger_info(
-                    '[{}/{}], [{}/{}], global_step: {}, speed: {:.1f} samples/sec, acc: {:.4f}, iou_shrink_map: {:.4f}, {}, lr:{:.6}, time:{:.2f}'.format(
-                        epoch, self.epochs, i + 1, self.train_loader_len, self.global_step, self.log_iter * cur_batch_size / batch_time, acc,
-                        iou_shrink_map, loss_str, lr[0], batch_time))
-                batch_start = time.time()
+            # if self.global_step % self.log_iter == 0:
+            batch_time = time.time() - batch_start
+            with open ('./log_my_flow.txt','a') as f:
+                f'{train_loss / self.train_loader_len}\n'
+                f.write(f'{batch_time}\n')
+
+            # self.logger_info(
+            #     '[{}/{}], [{}/{}], global_step: {}, speed: {:.1f} samples/sec, acc: {:.4f}, iou_shrink_map: {:.4f}, {}, lr:{:.6}, time:{:.2f}'.format(
+            #         epoch, self.epochs, i + 1, self.train_loader_len, self.global_step, self.log_iter * cur_batch_size / batch_time, acc,
+            #         iou_shrink_map, loss_str, lr))
+            batch_start = time.time()
 
             if self.tensorboard_enable and self.config['local_rank'] == 0:
                 # write tensorboard
@@ -117,6 +122,23 @@ class Trainer(BaseTrainer):
                     show_pred = torch.cat(show_pred)
                     show_pred = vutils.make_grid(show_pred.unsqueeze(1), nrow=cur_batch_size, normalize=False, padding=20, pad_value=1)
                     self.writer.add_image('TRAIN/preds', show_pred.numpy(), self.global_step)
+        
+        import nvidia_smi
+
+        nvidia_smi.nvmlInit()
+
+        deviceCount = nvidia_smi.nvmlDeviceGetCount()
+        for i in range(deviceCount):
+            handle = nvidia_smi.nvmlDeviceGetHandleByIndex(i)
+            info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+            if i ==1 :
+                print('use:{}'.format(info.used))
+                # print("Device {}: {}, Memory : ({:.2f}% free): {}(total), {} (free), {} (used)".format(i, nvidia_smi.nvmlDeviceGetName(handle), 100*info.free/info.total, info.total, info.free, info.used))
+
+        nvidia_smi.nvmlShutdown()
+        
+        with open('./flow_loss.txt','a') as f:
+            f.write(f'{train_loss / self.train_loader_len}\n')       
         return {'train_loss': train_loss / self.train_loader_len, 'lr': lr, 'time': time.time() - epoch_start,
                 'epoch': epoch}
 
@@ -153,6 +175,8 @@ class Trainer(BaseTrainer):
         import shutil
         import os
         if self.config['local_rank'] == 0:
+            # if os.path.exists(net_save_path):
+            #     shutil.rmtree(net_save_path)
             self._save_checkpoint(self.epoch_result['epoch'], net_save_path)
             save_best = False
             if self.validate_loader is not None and self.metric_cls is not None:  # 使用f1作为最优模型指标
@@ -182,8 +206,8 @@ class Trainer(BaseTrainer):
             self.logger_info(best_str)
             if save_best:
                 # shutil.copy(net_save_path, net_save_path_best)
-                if os.path.exists(net_save_path_best):
-                    shutil.rmtree(net_save_path_best)
+                # if os.path.exists(net_save_path_best):
+                #     shutil.rmtree(net_save_path_best)
                 self._save_checkpoint(self.epoch_result['epoch'], net_save_path_best)
                 self.logger_info("Saving current best: {}".format(net_save_path_best))
             else:
