@@ -57,7 +57,7 @@ dataset:
     loader:
       batch_size: 32
       shuffle: false
-      pin_memory: true
+      pin_memory: false
       num_workers: 6
       collate_fn: ''
   validate:
@@ -71,7 +71,6 @@ dataset:
               short_size: 736
               resize_text_polys: false
         img_mode: RGB
-    loader:
       batch_size: 16
       shuffle: false
       pin_memory: false
