@@ -20,7 +20,7 @@ def init_args():
 
 
 def main(config):
-    import torch
+    import oneflow as torch
     from models import build_model, build_loss
     from data_loader import get_dataloader
     from trainer import Trainer
@@ -48,7 +48,8 @@ def main(config):
 
     post_p = get_post_processing(config['post_processing'])
     metric = get_metric(config['metric'])
-
+    import time
+    start=time.time()
     trainer = Trainer(config=config,
                       model=model,
                       criterion=criterion,
@@ -57,7 +58,8 @@ def main(config):
                       metric_cls=metric,
                       validate_loader=validate_loader)
     trainer.train()
-
+    end=time.time()
+    print(f':::::time:::::{end-start}')
 
 if __name__ == '__main__':
     import sys

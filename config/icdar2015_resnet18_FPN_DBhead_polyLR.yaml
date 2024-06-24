@@ -46,7 +46,7 @@ trainer:
   resume_checkpoint: ''
   finetune_checkpoint: ''
   output_dir: output
-  tensorboard: true
+  tensorboard: false
 dataset:
   train:
     dataset:
@@ -71,7 +71,6 @@ dataset:
               short_size: 736
               resize_text_polys: false
         img_mode: RGB
-    loader:
       batch_size: 1
       shuffle: false
       pin_memory: false
